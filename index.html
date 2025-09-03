@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇游戏</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 确保不会自动跳转到错误页面 -->
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error('捕获到错误:', message);
+            return true; // 阻止默认错误处理
+        };
+        
+        // 检查是否从错误页面返回
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromError = urlParams.get('from');
+            if (fromError === 'error') {
+                console.log('从错误页面返回，确保游戏正常加载');
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>贪吃蛇游戏</h1>
+        </header>
+        
+        <div class="game-container">
+            <div class="game-info">
+                <div class="score-container">
+                    <span>分数: </span>
+                    <span id="score">0</span>
+                </div>
+                <div class="high-score-container">
+                    <span>最高分: </span>
+                    <span id="high-score">0</span>
+                </div>
+            </div>
+            
+            <canvas id="game-board" width="400" height="400"></canvas>
+            
+            <div class="controls">
+                <button id="start-btn">开始游戏</button>
+                <button id="pause-btn">暂停</button>
+                <button id="restart-btn">重新开始</button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>游戏说明</h2>
+            <p>使用键盘方向键（↑ ↓ ← →）或 WASD 键控制蛇的移动方向。</p>
+            <p>吃到食物可以增加分数和蛇的长度。</p>
+            <p>撞到墙壁、自己的身体或障碍物会导致游戏结束。</p>
+            <p>灰色方块是障碍物，游戏开始时随机生成，需要避开它们。</p>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
