@@ -40,6 +40,20 @@
                 </div>
             </div>
             
+            <div class="difficulty-settings">
+                <h3>难度设置</h3>
+                <div class="setting-item">
+                    <label for="speed-slider">游戏速度:</label>
+                    <input type="range" id="speed-slider" min="3" max="15" value="7" step="1">
+                    <span id="speed-value">7</span>
+                </div>
+                <div class="setting-item">
+                    <label for="obstacle-slider">障碍物数量:</label>
+                    <input type="range" id="obstacle-slider" min="0" max="30" value="8" step="1">
+                    <span id="obstacle-value">8</span>
+                </div>
+            </div>
+            
             <canvas id="game-board" width="400" height="400"></canvas>
             
             <div class="controls">

@@ -99,6 +99,91 @@ button:active {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* 难度设置样式 */
+.difficulty-settings {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    width: 400px;
+}
+
+.difficulty-settings h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.setting-item:last-child {
+    margin-bottom: 0;
+}
+
+.setting-item label {
+    font-weight: bold;
+    color: #34495e;
+    min-width: 100px;
+    text-align: left;
+}
+
+.setting-item input[type="range"] {
+    flex: 1;
+    margin: 0 10px;
+    height: 6px;
+    background: #ddd;
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #3498db;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb:hover {
+    background: #2980b9;
+}
+
+.setting-item input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #3498db;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+.setting-item input[type="range"]::-moz-range-thumb:hover {
+    background: #2980b9;
+}
+
+.setting-item span {
+    font-weight: bold;
+    color: #2c3e50;
+    min-width: 20px;
+    text-align: center;
+    background-color: #ecf0f1;
+    padding: 2px 8px;
+    border-radius: 3px;
+}
+
 .instructions {
     background-color: #fff;
     padding: 20px;
@@ -130,6 +215,27 @@ button:active {
     .game-info {
         width: 300px;
         font-size: 1rem;
+    }
+    
+    .difficulty-settings {
+        width: 300px;
+        padding: 10px;
+    }
+    
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .setting-item label {
+        min-width: auto;
+        margin-bottom: 5px;
+    }
+    
+    .setting-item input[type="range"] {
+        width: 100%;
+        margin: 0;
     }
     
     .controls {

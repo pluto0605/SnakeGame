@@ -8,11 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('start-btn');
     const pauseBtn = document.getElementById('pause-btn');
     const restartBtn = document.getElementById('restart-btn');
+    const speedSlider = document.getElementById('speed-slider');
+    const speedValue = document.getElementById('speed-value');
+    const obstacleSlider = document.getElementById('obstacle-slider');
+    const obstacleValue = document.getElementById('obstacle-value');
     
     // 游戏配置
     const gridSize = 20;
     const tileCount = canvas.width / gridSize;
     let speed = 7;
+    let baseSpeed = 7; // 基础速度，由滑块控制
+    let obstacleCount = 8; // 障碍物数量，由滑块控制
     
     // 游戏状态
     let gameRunning = false;
@@ -24,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 蛇的初始位置和速度
     let snake = [
-        { x: 10, y: 10 }
+        { x: 10, y: 10 },  // 蛇头
+        { x: 9, y: 10 }    // 蛇身
     ];
     let velocityX = 0;
     let velocityY = 0;
@@ -32,9 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 颜色配置
     const colors = {
         background: '#ffffff',
-        snake: '#2ecc71',
-        snakeHead: '#27ae60',
-        food: '#e74c3c',
+        snake: '#e74c3c',        // 红色蛇身
+        snakeHead: '#c0392b',    // 深红色蛇头
+        food: '#f1c40f',        // 黄色食物
         grid: '#f0f0f0',
         obstacle: '#7f8c8d'
     };
@@ -93,6 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 移动蛇
     function moveSnake() {
+        // 如果蛇还没有开始移动，不进行移动
+        if (velocityX === 0 && velocityY === 0) {
+            return;
+        }
+        
         // 创建新的蛇头
         const head = { x: snake[0].x + velocityX, y: snake[0].y + velocityY };
         snake.unshift(head);
@@ -113,9 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // 生成新的食物
             food = generateFood();
             
-            // 增加速度
+            // 增加速度（基于基础速度）
             if (score % 50 === 0) {
-                speed += 0.5;
+                speed = baseSpeed + (score / 50) * 0.5;
             }
         } else {
             // 如果没有吃到食物，移除尾部
@@ -126,14 +138,91 @@ document.addEventListener('DOMContentLoaded', () => {
     // 绘制蛇
     function drawSnake() {
         snake.forEach((segment, index) => {
-            // 蛇头使用不同颜色
-            ctx.fillStyle = index === 0 ? colors.snakeHead : colors.snake;
-            ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+            const x = segment.x * gridSize;
+            const y = segment.y * gridSize;
             
-            // 添加边框
-            ctx.strokeStyle = '#219653';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+            if (index === 0) {
+                // 绘制蛇头 - 卡通化设计
+                ctx.fillStyle = colors.snakeHead;
+                
+                // 绘制圆角矩形蛇头
+                ctx.beginPath();
+                const radius = 8;
+                ctx.roundRect(x + 2, y + 2, gridSize - 4, gridSize - 4, radius);
+                ctx.fill();
+                
+                // 添加蛇头边框
+                ctx.strokeStyle = '#a93226';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 绘制眼睛
+                ctx.fillStyle = '#ffffff';
+                const eyeSize = 3;
+                const eyeOffset = 5;
+                
+                // 根据移动方向调整眼睛位置
+                let eyeX1, eyeY1, eyeX2, eyeY2;
+                if (velocityX === 1) { // 向右
+                    eyeX1 = x + gridSize - eyeOffset;
+                    eyeY1 = y + eyeOffset;
+                    eyeX2 = x + gridSize - eyeOffset;
+                    eyeY2 = y + gridSize - eyeOffset;
+                } else if (velocityX === -1) { // 向左
+                    eyeX1 = x + eyeOffset;
+                    eyeY1 = y + eyeOffset;
+                    eyeX2 = x + eyeOffset;
+                    eyeY2 = y + gridSize - eyeOffset;
+                } else if (velocityY === -1) { // 向上
+                    eyeX1 = x + eyeOffset;
+                    eyeY1 = y + eyeOffset;
+                    eyeX2 = x + gridSize - eyeOffset;
+                    eyeY2 = y + eyeOffset;
+                } else { // 向下或初始状态
+                    eyeX1 = x + eyeOffset;
+                    eyeY1 = y + gridSize - eyeOffset;
+                    eyeX2 = x + gridSize - eyeOffset;
+                    eyeY2 = y + gridSize - eyeOffset;
+                }
+                
+                // 绘制白色眼球
+                ctx.beginPath();
+                ctx.arc(eyeX1, eyeY1, eyeSize, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(eyeX2, eyeY2, eyeSize, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // 绘制黑色瞳孔
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(eyeX1, eyeY1, eyeSize / 2, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(eyeX2, eyeY2, eyeSize / 2, 0, 2 * Math.PI);
+                ctx.fill();
+                
+            } else {
+                // 绘制蛇身 - 卡通化设计
+                ctx.fillStyle = colors.snake;
+                
+                // 绘制圆角矩形蛇身
+                ctx.beginPath();
+                const radius = 6;
+                ctx.roundRect(x + 3, y + 3, gridSize - 6, gridSize - 6, radius);
+                ctx.fill();
+                
+                // 添加蛇身边框
+                ctx.strokeStyle = '#c0392b';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                
+                // 添加蛇身纹理
+                ctx.fillStyle = '#d35400';
+                ctx.beginPath();
+                ctx.arc(x + gridSize/2, y + gridSize/2, 2, 0, 2 * Math.PI);
+                ctx.fill();
+            }
         });
     }
     
@@ -318,18 +407,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 重置游戏
     function resetGame() {
-        snake = [{ x: 10, y: 10 }];
+        snake = [
+            { x: 10, y: 10 },  // 蛇头
+            { x: 9, y: 10 }    // 蛇身
+        ];
         velocityX = 0;
         velocityY = 0;
         food = generateFood();
         score = 0;
         scoreElement.textContent = score;
-        speed = 7;
+        speed = baseSpeed; // 使用基础速度
         gameOver = false;
         gamePaused = false;
         
-        // 根据难度生成障碍物
-        const obstacleCount = Math.floor(tileCount * 0.1); // 约10%的格子有障碍物
+        // 根据滑块设置生成障碍物
         generateObstacles(obstacleCount);
     }
     
@@ -398,6 +489,31 @@ document.addEventListener('DOMContentLoaded', () => {
         gameLoop();
     });
     
+    // 速度滑块事件监听
+    speedSlider.addEventListener('input', function(e) {
+        baseSpeed = parseInt(e.target.value);
+        speed = baseSpeed;
+        speedValue.textContent = baseSpeed;
+        console.log('游戏速度设置为:', baseSpeed);
+    });
+    
+    // 障碍物数量滑块事件监听
+    obstacleSlider.addEventListener('input', function(e) {
+        obstacleCount = parseInt(e.target.value);
+        obstacleValue.textContent = obstacleCount;
+        console.log('障碍物数量设置为:', obstacleCount);
+        
+        // 如果游戏未运行，立即更新障碍物
+        if (!gameRunning) {
+            generateObstacles(obstacleCount);
+            clearCanvas();
+            drawGrid();
+            drawSnake();
+            drawFood();
+            drawObstacles();
+        }
+    });
+    
     // 初始化游戏
     clearCanvas();
     drawGrid();
@@ -405,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
     drawFood();
     // 先初始化障碍物数组，再生成障碍物
     obstacles = [];
-    generateObstacles(Math.floor(tileCount * 0.1));
+    generateObstacles(obstacleCount);
     drawObstacles();
     
     console.log('游戏初始化完成');
